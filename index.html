@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>ChordCraft Studio</title>
+<meta name="description" content="ChordCraft Studio is a beginner guitar book and a browser toolkit with a backing band that plays along to your chords. Pay once, no subscription.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: fretboard-inspired landing page. One column of bands; hero pairs the pitch with a live-looking backing-track strip. */
+:root{
+  --bg:#f2efe8; --surface:#fbf9f4; --ink:#1d1512; --muted:#5b4f49; --line:#d8d0c1;
+  --accent:#b4520f; --accent-ink:#ffffff; --brass:#8a6a2c; --band:#e9e3d6; --chip:#efe9dc;
+  --lead-bg:#1d1512; --lead-fg:#f3ece0; --lead-accent:#f0913a; --lead-cta:#f0913a; --lead-cta-ink:#1d1008;
+  --f-display:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'DM Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17100e; --surface:#221815; --ink:#f3ece0; --muted:#b9aa9c; --line:#3a2b26;
+  --accent:#f0913a; --accent-ink:#1d1008; --brass:#d2b06a; --band:#1d1411; --chip:#2c201c; --lead-bg:#2b1c17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17100e; --surface:#221815; --ink:#f3ece0; --muted:#b9aa9c; --line:#3a2b26;
+  --accent:#f0913a; --accent-ink:#1d1008; --brass:#d2b06a; --band:#1d1411; --chip:#2c201c; --lead-bg:#2b1c17; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--f-display);line-height:1.08;margin:0;text-wrap:balance;letter-spacing:-.015em}
+p{margin:0}
+a{color:inherit}
+.wrap{max-width:1120px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.eyebrow{font:500 12.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:var(--accent-ink);font:700 17px/1 var(--f-body);text-decoration:none;padding:17px 28px;border-radius:999px;border:0;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+.cta:hover{transform:translateY(-2px);box-shadow:0 10px 24px -10px var(--accent)}
+.cta:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--brass);outline-offset:3px}
+.cta.sm{padding:11px 20px;font-size:15px}
+.ghost{display:inline-flex;align-items:center;gap:8px;font-weight:700;text-decoration:none;padding:16px 6px;color:var(--ink);border-bottom:2px solid var(--line)}
+.ghost:hover{border-color:var(--accent)}
+
+/* header */
+header{padding-block:18px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font:800 20px/1 var(--f-display);text-decoration:none;letter-spacing:-.02em}
+.logo svg{flex:none}
+
+/* hero */
+.hero{padding-block:clamp(28px,6vw,72px) clamp(44px,7vw,88px)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center}
+.hero h1{font-size:clamp(40px,6.4vw,76px);font-weight:800;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,21px);color:var(--muted);margin-top:22px;max-width:34em}
+.hero-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:32px}
+.fine{font-size:14.5px;color:var(--muted);margin-top:16px}
+.fine b{color:var(--ink)}
+
+/* backing track mock */
+.deck{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 30px 60px -40px rgba(0,0,0,.45);min-width:0}
+.deck-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.deck-top .t{font:700 14px/1 var(--f-mono);letter-spacing:.04em}
+.deck-top .bpm{font:500 13px/1 var(--f-mono);color:var(--muted)}
+.count{display:flex;gap:8px;margin:18px 0 14px}
+.count span{flex:1;height:34px;border-radius:8px;background:var(--chip);display:grid;place-items:center;font:700 13px/1 var(--f-mono);color:var(--muted)}
+.bars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bar{background:var(--chip);border-radius:12px;padding:16px 8px 12px;text-align:center;font:700 clamp(20px,3vw,28px)/1 var(--f-mono);border:2px solid transparent;animation:lit 6.4s steps(1,end) infinite}
+.bar small{display:block;font:500 11px/1 var(--f-mono);color:var(--muted);margin-top:8px;letter-spacing:.08em}
+.bar:nth-child(2){animation-delay:1.6s}.bar:nth-child(3){animation-delay:3.2s}.bar:nth-child(4){animation-delay:4.8s}
+@keyframes lit{0%{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--chip))}25%,100%{border-color:transparent;background:var(--chip)}}
+.deck-foot{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}
+.deck-foot svg{flex:none;width:92px;height:auto}
+.insts{display:flex;flex-wrap:wrap;gap:8px}
+.insts span{font:500 12.5px/1 var(--f-mono);background:var(--chip);padding:8px 10px;border-radius:999px}
+
+/* video */
+.video{padding-block:clamp(40px,6vw,72px);background:var(--band)}
+.video h2,.sec h2{font-size:clamp(30px,4.4vw,48px);font-weight:800}
+.video .head{max-width:640px;margin-bottom:28px}
+.vframe{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:18px;overflow:hidden;background:#0c0807;border:1px solid var(--line)}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vposter{position:absolute;inset:0;display:grid;place-items:center;text-decoration:none;color:#f3ece0;background:
+  repeating-linear-gradient(90deg,transparent 0 78px,rgba(210,176,106,.18) 78px 80px),linear-gradient(160deg,#2a1b16,#0c0807)}
+.vposter span{display:grid;justify-items:center;gap:14px;font:700 18px/1.2 var(--f-body);text-align:center;padding:16px}
+.vposter i{width:84px;height:84px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+
+/* sections */
+.sec{padding-block:clamp(52px,8vw,104px)}
+.sec .head{max-width:660px;margin-bottom:40px}
+.sec .head p{color:var(--muted);margin-top:16px;font-size:19px}
+.feat{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px;grid-column:span 2;min-width:0}
+.card h3{font-size:22px;font-weight:700;margin-bottom:10px}
+.card p{color:var(--muted);font-size:16.5px}
+.card.lead{grid-column:span 6;background:var(--lead-bg);color:var(--lead-fg);border-color:transparent;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+.card.lead h3{font-size:clamp(26px,3.4vw,38px);font-weight:800}
+.card.lead p{color:inherit;opacity:.82;font-size:18px}
+.card.lead .tag{font:500 12.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lead-accent);margin-bottom:14px;display:block}
+.points{list-style:none;margin:0;padding:0;display:grid;gap:12px;font-size:16.5px}
+.points li{display:flex;gap:12px;align-items:flex-start}
+.points li::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:.5em}
+.card.lead .points li::before{background:var(--lead-accent)}
+.card.wide{grid-column:span 3}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+.step{border-top:3px solid var(--accent);padding-top:18px;counter-increment:s;min-width:0}
+.step::before{content:counter(s);font:700 15px/1 var(--f-mono);color:var(--brass);display:block;margin-bottom:10px}
+.step h3{font-size:22px;margin-bottom:8px}
+.step p{color:var(--muted);font-size:16.5px}
+
+.who{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.who span{background:var(--chip);border:1px solid var(--line);padding:10px 16px;border-radius:999px;font-weight:500;font-size:15.5px}
+
+/* price */
+.price{background:var(--band);background-image:repeating-linear-gradient(90deg,transparent 0 118px,color-mix(in srgb,var(--brass) 22%,transparent) 118px 120px)}
+.pbox{max-width:760px;margin-inline:auto;background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:clamp(24px,5vw,48px);box-shadow:0 36px 70px -46px rgba(0,0,0,.55)}
+.pbox .badge{display:inline-block;font:700 12.5px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);padding:8px 12px;border-radius:999px}
+.amount{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;margin:20px 0 4px}
+.amount .now{font:800 clamp(54px,10vw,88px)/1 var(--f-display);letter-spacing:-.03em}
+.amount .now sup{font-size:.4em;vertical-align:.9em;margin-right:4px;font-weight:700}
+.amount .was{font:500 24px/1 var(--f-mono);color:var(--muted);text-decoration:line-through}
+.pnote{color:var(--muted);font-size:15.5px}
+.pbox .points{margin:26px 0 30px}
+.pbox .cta{width:100%;font-size:19px;padding:20px 28px}
+
+/* faq */
+.faq{max-width:760px}
+details{border-top:1px solid var(--line);padding:20px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font:700 19px/1.3 var(--f-display);list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:500 26px/1 var(--f-mono);color:var(--accent);flex:none}
+details[open] summary::after{content:"\2212"}
+details p{color:var(--muted);margin-top:12px;max-width:60ch}
+
+.final{text-align:center;padding-block:clamp(56px,9vw,112px);background:var(--lead-bg);color:var(--lead-fg)}
+.final .cta{background:var(--lead-cta);color:var(--lead-cta-ink)}
+.final h2{font-size:clamp(32px,5.4vw,60px);font-weight:800;max-width:15em;margin-inline:auto}
+.final p{opacity:.8;margin:18px auto 32px;max-width:32em;font-size:19px}
+footer{padding-block:30px;font-size:14.5px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:880px){
+  .hero .wrap{grid-template-columns:1fr}
+  .card{grid-column:span 3}.card.lead{grid-column:span 6;grid-template-columns:1fr}
+  .card.wide{grid-column:span 6}
+  .steps{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .card,.card.wide{grid-column:span 6}
+  .logo{font-size:18px}
+  .hero-cta .cta{width:100%}
+}
+@media (prefers-reduced-motion:reduce){.bar{animation:none}html{scroll-behavior:auto}.cta{transition:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="ChordCraft Studio">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="1" y="1" width="28" height="28" rx="8" fill="var(--ink)"/><g stroke="var(--brass)" stroke-width="1.4"><path d="M8 6v18M13 6v18M18 6v18M23 6v18"/></g><circle cx="13" cy="12" r="2.6" fill="var(--accent)"/><circle cx="18" cy="18" r="2.6" fill="var(--accent)"/></svg>
+      ChordCraft Studio
+    </a>
+    <a class="cta sm" href="#price" data-buy>Get it now</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">For beginner guitarists</span>
+      <h1>Practice with a <em>full band</em> from your very first chord.</h1>
+      <p class="lede">ChordCraft Studio is a beginner guitar book and a toolkit that runs in your browser. Type the chords of a song, press play, and a guitar, piano, bass and drums play along while you learn.</p>
+      <div class="hero-cta">
+        <a class="cta" href="#price" data-buy>Get ChordCraft Studio</a>
+        <a class="ghost" href="#video">Watch the 40-second demo</a>
+      </div>
+      <p class="fine"><b>Pay once, keep it.</b> No subscription, no account. Works on your phone and your computer.</p>
+    </div>
+
+    <div class="deck" role="img" aria-label="Preview of the backing track panel playing the chords C, G, A minor and F">
+      <div class="deck-top"><span class="t">Verse</span><span class="bpm">90 BPM · 4/4</span></div>
+      <div class="count" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+      <div class="bars" aria-hidden="true">
+        <div class="bar">C<small>BAR 1</small></div>
+        <div class="bar">G<small>BAR 2</small></div>
+        <div class="bar">Am<small>BAR 3</small></div>
+        <div class="bar">F<small>BAR 4</small></div>
+      </div>
+      <div class="deck-foot" aria-hidden="true">
+        <svg viewBox="0 0 100 112" fill="none"><g stroke="var(--muted)" stroke-width="1.5"><path d="M14 24h72"/><path d="M14 24v80M28 24v80M42 24v80M56 24v80M70 24v80M84 24v80" opacity=".9"/><path d="M14 48h72M14 72h72M14 96h72" opacity=".55"/></g><path d="M14 22h72" stroke="var(--ink)" stroke-width="5"/><circle cx="14" cy="84" r="6" fill="var(--accent)"/><circle cx="28" cy="60" r="6" fill="var(--accent)"/><circle cx="84" cy="84" r="6" fill="var(--accent)"/><g stroke="var(--muted)" stroke-width="1.5"><circle cx="42" cy="12" r="4"/><circle cx="56" cy="12" r="4"/><circle cx="70" cy="12" r="4"/></g></svg>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="video" id="video">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">See it play</span>
+      <h2 style="margin-top:14px">Forty seconds. That is all it takes to see how it works.</h2>
+    </div>
+    <div class="vframe"><iframe src="https://www.youtube.com/embed/YTdVxNQ_mFM?si=UM5OaFIQqOxXtHqc" title="ChordCraft Studio demo video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">What you get</span>
+      <h2 style="margin-top:14px">Everything a beginner reaches for, in one place.</h2>
+      <p>Stop switching between a tuner app, a chord chart site and a metronome. Open one page and practice.</p>
+    </div>
+    <div class="feat">
+      <article class="card lead">
+        <div>
+          <span class="tag">The big one</span>
+          <h3>A backing band that plays your song.</h3>
+          <p style="margin-top:14px">Write the chords for each part of a song, set the order, pick a groove and press play. A four-beat count-in gets you in time. Loop the hard part until it feels easy, then save the song to come back to.</p>
+        </div>
+        <ul class="points">
+          <li>Guitar, piano, bass, drums and tambourine, each with its own volume</li>
+          <li>Sections like intro, verse and chorus, in any order</li>
+          <li>Set the tempo and the beats per bar</li>
+          <li>Save up to 5 songs in your browser</li>
+        </ul>
+      </article>
+      <article class="card"><h3>Chord finder</h3><p>Pick a root and a chord type and see playable shapes with finger positions. Hear each one. Keep your own chords in up to 10 named collections.</p></article>
+      <article class="card"><h3>Fretboard</h3><p>Find any note on the neck, in the tuning you use. Handy when a song says play a note and you have no idea where it lives.</p></article>
+      <article class="card"><h3>Tuner and metronome</h3><p>Reference tones for each string, and a steady click with accents and subdivisions to keep you honest.</p></article>
+      <article class="card wide"><h3>Capo and transpose</h3><p>Move a song to a key that suits your voice and see which chord shapes to play with or without a capo.</p></article>
+      <article class="card wide"><h3>Circle of fifths and progressions</h3><p>See which chords belong together in a key, then try the common chord sequences in any key.</p></article>
+    </div>
+    <div class="who" aria-label="Who it is for">
+      <span>Self-taught beginners</span><span>Parents and kids learning together</span><span>Teachers practising with students</span><span>Solo and street musicians</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--band)">
+  <div class="wrap">
+    <div class="head"><span class="eyebrow">How it works</span><h2 style="margin-top:14px">From chords to a playing band in three steps.</h2></div>
+    <div class="steps">
+      <div class="step"><h3>Type your chords</h3><p>Add the chords of your song to a section. Not sure how a chord is played? Look it up in the chord finder.</p></div>
+      <div class="step"><h3>Press play</h3><p>Four beats of count-in, then the band starts. Choose the groove, the tempo and who is in the band.</p></div>
+      <div class="step"><h3>Play along and save</h3><p>Loop the tricky bar, slow it down, and save the song. Next time it is one click away.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec price" id="price">
+  <div class="wrap">
+    <div class="pbox">
+      <span class="badge">Launch price · first 20 copies</span>
+      <div class="amount"><span class="now"><sup>CA$</sup>14.99</span><span class="was">CA$19.99</span></div>
+      <p class="pnote">One payment in Canadian dollars. No subscription.</p>
+      <ul class="points">
+        <li>The ChordCraft Studio toolkit, a file that opens in any modern browser</li>
+        <li>The simple beginner guitar book, as a PDF</li>
+        <li>Fretboard, chords, tuner, metronome, circle of fifths, capo, progressions and the backing track maker</li>
+        <li>English and Portuguese, light and dark themes, phone and computer</li>
+      </ul>
+      <a class="cta" href="#price" data-buy>Buy ChordCraft Studio</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="head"><span class="eyebrow">Questions</span><h2 style="margin-top:14px">Before you buy</h2></div>
+    <div class="faq">
+      <details><summary>Do I need an account or a subscription?</summary><p>No. You pay once and the toolkit is yours. Nothing to sign up for.</p></details>
+      <details><summary>Does it work offline?</summary><p>Yes. It runs in your browser from the file you download, so you can practise without an internet connection.</p></details>
+      <details><summary>Does it work on my phone?</summary><p>Yes. The layout is built for phone screens as well as computers.</p></details>
+      <details><summary>Where are my saved songs and chord collections kept?</summary><p>In your own browser on your own device. They stay private to you.</p></details>
+      <details><summary>Which languages does it speak?</summary><p>English and Portuguese (Brazil). You can switch at any time from the menu at the top of the page.</p></details>
+      <details><summary>Is it only for beginners?</summary><p>It is designed for beginners, but teachers and solo musicians use the backing track maker to practise and to play along on stage.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <h2>Pick up your guitar. The band is ready.</h2>
+    <p>Start with the launch price while it lasts.</p>
+    <a class="cta" href="#price" data-buy>Get ChordCraft Studio</a>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>ChordCraft Studio</span><span>Made in Canada. Prices in Canadian dollars.</span></div></footer>
+
+<script>
+// Put the purchase page link here when you have one. Every "buy" button then points to it.
+var BUY_URL = "";
+(function(){
+  if(!BUY_URL) return;
+  document.querySelectorAll('[data-buy]').forEach(function(a){a.href=BUY_URL;a.target='_blank';a.rel='noopener'});
+})();
+</script>
+
+</body>
+</html>
