@@ -61,10 +61,12 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 .bars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .dg-l{stroke:var(--muted);stroke-width:1;fill:none}.dg-nut{stroke:var(--ink);stroke-width:4}.dg-dot{fill:var(--ink)}.dg-root{fill:var(--brass)}.dg-m{stroke:var(--muted);stroke-width:1.5;fill:none}
 .bar svg{display:block;width:100%;max-width:104px;height:auto;margin:10px auto 0}
-.bar{background:var(--chip);border-radius:12px;padding:14px 6px 12px;text-align:center;font:700 clamp(20px,3vw,28px)/1 var(--f-mono);border:2px solid transparent;animation:lit 6.4s steps(1,end) infinite}
+.bar{background:var(--chip);border-radius:12px;padding:14px 6px 12px;text-align:center;font:700 clamp(20px,3vw,28px)/1 var(--f-mono);border:2px solid transparent;animation:lit 9.6s steps(1,end) infinite}
 .bar small{display:block;font:500 11px/1 var(--f-mono);color:var(--muted);margin-top:8px;letter-spacing:.08em}
-.bar:nth-child(2){animation-delay:1.6s}.bar:nth-child(3){animation-delay:3.2s}.bar:nth-child(4){animation-delay:4.8s}
-@keyframes lit{0%{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--chip))}25%,100%{border-color:transparent;background:var(--chip)}}
+.bar:nth-child(1){animation-delay:3.2s}.bar:nth-child(2){animation-delay:4.8s}.bar:nth-child(3){animation-delay:6.4s}.bar:nth-child(4){animation-delay:8s}
+.count span{animation:beat 9.6s steps(1,end) infinite}.count span:nth-child(2){animation-delay:.8s}.count span:nth-child(3){animation-delay:1.6s}.count span:nth-child(4){animation-delay:2.4s}
+@keyframes lit{0%{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--chip))}16.67%,100%{border-color:transparent;background:var(--chip)}}
+@keyframes beat{0%{background:var(--accent);color:var(--accent-ink)}8.33%,100%{background:var(--chip);color:var(--muted)}}
 .deck-foot{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}
 .deck-foot svg{flex:none;width:92px;height:auto}
 .insts{display:flex;flex-wrap:wrap;gap:8px}
@@ -149,7 +151,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .logo{font-size:18px}
   .hero-cta .cta{width:100%}
 }
-@media (prefers-reduced-motion:reduce){.bar{animation:none}html{scroll-behavior:auto}.cta{transition:none}}
+@media (prefers-reduced-motion:reduce){.bar,.count span{animation:none}html{scroll-behavior:auto}.cta{transition:none}}
 </style>
 </head>
 <body>
